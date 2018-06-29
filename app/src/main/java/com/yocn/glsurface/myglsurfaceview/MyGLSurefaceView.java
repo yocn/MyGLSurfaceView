@@ -18,7 +18,8 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLSurefaceView extends GLSurfaceView {
     private Context mContext;
     SurfaceTexture mSurface;
-    CameraInterface mCameraInterface;
+    //    CameraInterface mCameraInterface;
+    private DirectDrawer mDirectDrawer;
 
     public MyGLSurefaceView(Context context) {
         super(context);
@@ -38,50 +39,40 @@ public class MyGLSurefaceView extends GLSurfaceView {
     MyRenderer mRenderer = new MyRenderer() {
         @Override
         public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-            super.onSurfaceCreated(gl10, eglConfig);
-            int textureId = createTextureID();
-            mSurface = new SurfaceTexture(textureId);
+            int mTextureID = GlUtil.createTextureID();
+            mSurface = new SurfaceTexture(mTextureID);
             mSurface.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
                 public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-
+                    LogUtil.d("yocn surfaceTexture->" + surfaceTexture);
+                    MyGLSurefaceView.this.requestRender();
                 }
             });
-            MyRenderer myRenderer = new MyRenderer();
-            mCameraInterface = new CameraInterface();
-            mCameraInterface.openBackCamera();
+            mDirectDrawer = new DirectDrawer(mTextureID);
+            CameraCapture.get().openBackCamera();
         }
 
         @Override
         public void onSurfaceChanged(GL10 gl10, int width, int height) {
-            super.onSurfaceChanged(gl10, width, height);
             // 设置OpenGL场景的大小,(0,0)表示窗口内部视口的左下角，(w,h)指定了视口的大小
             GLES20.glViewport(0, 0, width, height);
-//            if (!mCameraInterface.isPreviewing()) {
-                mCameraInterface.doStartPreview(mSurface);
-//            }
+            if (!CameraCapture.get().isPreviewing()) {
+                CameraCapture.get().doStartPreview(mSurface);
+            }
         }
 
         @Override
         public void onDrawFrame(GL10 gl10) {
-            super.onDrawFrame(gl10);
+            LogUtil.d("yocn onDrawFrame");
+            // 设置白色为清屏
+            GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            // 清除屏幕和深度缓存
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+            // 更新纹理
+            mSurface.updateTexImage();
+            mDirectDrawer.draw();
         }
+
     };
 
-    private int createTextureID() {
-        int[] texture = new int[1];
-
-        GLES20.glGenTextures(1, texture, 0);
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-
-        return texture[0];
-    }
 }
