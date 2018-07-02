@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello"/>
 
     <com.yocn.glsurface.myglsurfaceview.MyGLSurefaceView
         android:id="@+id/glsv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/switch_camera"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:text="转换摄像头"/>
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:background="@color/colorAccent"-->
+        <!--android:orientation="horizontal">-->
+
+        <Button
+            android:id="@+id/bt_change"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="转换摄像头"/>
+
+        <Button
+            android:id="@+id/bt_rotate"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/bt_change"
+            android:text="旋转摄像头"/>
+    <!--</LinearLayout>-->
 </RelativeLayout>

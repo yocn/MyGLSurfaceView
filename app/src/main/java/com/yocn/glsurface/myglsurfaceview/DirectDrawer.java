@@ -1,5 +1,6 @@
 package com.yocn.glsurface.myglsurfaceview;
 
+import android.graphics.Matrix;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
@@ -33,6 +34,7 @@ public class DirectDrawer {
             "    textureCoordinate = inputTextureCoordinate;\n" +
             "}\n";
     private FloatBuffer vertexBuffer, mTextureCoordsBuffer;
+    private FloatBuffer vertexBuffer90, mTextureCoordsBuffer90;
     private ShortBuffer drawListBuffer;
     private final int mProgram;
     private int mPositionHandle;
@@ -106,7 +108,7 @@ public class DirectDrawer {
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         // Prepare the <insert shape here> coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, getVertexBuffer());
 
         GLES20.glEnableVertexAttribArray(mTextureCoordHandle);
 
@@ -151,19 +153,63 @@ public class DirectDrawer {
     }
 
     public void updateVertices() {
-        final float w = 1.0f;
-        final float h = 1.0f;
-        mVertices[0] = -w;
-        mVertices[1] = h;
-        mVertices[2] = -w;
-        mVertices[3] = -h;
-        mVertices[4] = w;
-        mVertices[5] = -h;
-        mVertices[6] = w;
-        mVertices[7] = h;
+        mVertices = getmVertices();
         vertexBuffer = ByteBuffer.allocateDirect(mVertices.length * 4).order(ByteOrder.nativeOrder())
                 .asFloatBuffer().put(mVertices);
         vertexBuffer.position(0);
+    }
+
+    public FloatBuffer getVertexBuffer() {
+        mVertices = getmVertices();
+        vertexBuffer = ByteBuffer.allocateDirect(mVertices.length * 4).order(ByteOrder.nativeOrder())
+                .asFloatBuffer().put(mVertices);
+        vertexBuffer.position(0);
+        return vertexBuffer;
+    }
+
+    public int ORITATION_0 = 0;
+    public int ORITATION_90 = 1;
+    public int ORITATION_180 = 2;
+    public int ORITATION_270 = 3;
+
+    private int mCurrentOritation = ORITATION_0;
+
+    public void setRotate() {
+        mCurrentOritation++;
+        if (mCurrentOritation > ORITATION_270) {
+            mCurrentOritation = ORITATION_0;
+        }
+    }
+
+    public float[] getmVertices() {
+        float verts[] = new float[8];
+        final float w = 1.0f;
+        final float h = 1.0f;
+        verts[0] = -w;
+        verts[1] = h;
+        verts[2] = -w;
+        verts[3] = -h;
+        verts[4] = w;
+        verts[5] = -h;
+        verts[6] = w;
+        verts[7] = h;
+
+        float[] result = new float[8];
+        Matrix matrix = new Matrix();
+        matrix.reset();
+        int degree = 90 * mCurrentOritation;
+        matrix.postRotate(degree);
+        matrix.mapPoints(result, verts);
+        print("90->" + degree, result);
+
+        return result;
+    }
+
+    private void print(String tag, float[] result) {
+        LogUtil.d("matrix->" + tag + ":" + result[0] + "." + result[1] + "/"
+                + result[2] + "." + result[3] + "/"
+                + result[4] + "." + result[5] + "/"
+                + result[6] + "." + result[7]);
     }
 
     public void setTexCoords() {

@@ -2,7 +2,6 @@ package com.yocn.glsurface.myglsurfaceview;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
@@ -34,6 +33,12 @@ public class MyGLSurefaceView extends GLSurfaceView {
         setRenderer(mRenderer);
         //设置刷新模式
         setRenderMode(RENDERMODE_WHEN_DIRTY);
+    }
+
+    public void setRotate() {
+        if (mDirectDrawer != null) {
+            mDirectDrawer.setRotate();
+        }
     }
 
     MyRenderer mRenderer = new MyRenderer() {
