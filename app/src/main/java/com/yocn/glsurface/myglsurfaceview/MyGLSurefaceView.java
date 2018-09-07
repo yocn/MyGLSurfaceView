@@ -5,6 +5,8 @@ import android.graphics.SurfaceTexture;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -17,7 +19,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLSurefaceView extends GLSurfaceView {
     private Context mContext;
     SurfaceTexture mSurface;
-    //    CameraInterface mCameraInterface;
     private DirectDrawer mDirectDrawer;
 
     public MyGLSurefaceView(Context context) {
@@ -35,6 +36,7 @@ public class MyGLSurefaceView extends GLSurfaceView {
         setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
+
     public void setRotate() {
         if (mDirectDrawer != null) {
             mDirectDrawer.setRotate();
@@ -49,7 +51,7 @@ public class MyGLSurefaceView extends GLSurfaceView {
             mSurface.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
                 @Override
                 public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                    LogUtil.d("yocn surfaceTexture->" + surfaceTexture);
+//                    LogUtil.d("yocn surfaceTexture->" + surfaceTexture);
                     MyGLSurefaceView.this.requestRender();
                 }
             });
@@ -68,7 +70,7 @@ public class MyGLSurefaceView extends GLSurfaceView {
 
         @Override
         public void onDrawFrame(GL10 gl10) {
-            LogUtil.d("yocn onDrawFrame");
+//            LogUtil.d("yocn onDrawFrame");
             // 设置白色为清屏
             GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             // 清除屏幕和深度缓存
@@ -79,5 +81,9 @@ public class MyGLSurefaceView extends GLSurfaceView {
         }
 
     };
+
+    public void setTouchListener(OnTouchListener mOnTouchListener) {
+        setOnTouchListener(mOnTouchListener);
+    }
 
 }

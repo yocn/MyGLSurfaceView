@@ -34,7 +34,6 @@ public class DirectDrawer {
             "    textureCoordinate = inputTextureCoordinate;\n" +
             "}\n";
     private FloatBuffer vertexBuffer, mTextureCoordsBuffer;
-    private FloatBuffer vertexBuffer90, mTextureCoordsBuffer90;
     private ShortBuffer drawListBuffer;
     private final int mProgram;
     private int mPositionHandle;
@@ -200,7 +199,7 @@ public class DirectDrawer {
         int degree = 90 * mCurrentOritation;
         matrix.postRotate(degree);
         matrix.mapPoints(result, verts);
-        print("90->" + degree, result);
+//        print("90->" + degree, result);
 
         return result;
     }
